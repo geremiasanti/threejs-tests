@@ -12,7 +12,7 @@ document.body.appendChild(renderer.domElement);
 // scene and camera
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 5;
+camera.position.x = 5;
 
 // controls
 new OrbitControls(camera, renderer.domElement);
@@ -35,8 +35,11 @@ loader.load(
 );
 
 // light
-const light = new THREE.AmbientLight(0x404040);
-scene.add(light);
+const light = new THREE.DirectionalLight( 0xffffff, 0.5 );
+light.position.x = 5;
+light.position.y = 5;
+const lightHelper = new THREE.DirectionalLightHelper(light, 2);
+scene.add(light, lightHelper);
 
 // rendering scene
 function animate() { 
