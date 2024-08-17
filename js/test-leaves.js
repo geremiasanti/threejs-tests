@@ -34,13 +34,6 @@ loader.load(
     }
 );
 
-// light
-const light = new THREE.DirectionalLight(0xffffff, 0.5);
-light.position.x = 5;
-light.position.y = 5;
-const lightHelper = new THREE.DirectionalLightHelper(light, 2);
-scene.add(light, lightHelper);
-
 // rendering scene
 function animate() { 
     renderer.render(scene, camera);
@@ -48,8 +41,6 @@ function animate() {
 renderer.setAnimationLoop(animate);
 
 function initLeaves(gltf) {
-	console.log(gltf.scene.children[0].geometry);
-
 	// scene content
 	const geometry = gltf.scene.children[0].geometry;
 	const material = new THREE.MeshNormalMaterial();
