@@ -25,8 +25,8 @@ scene.add(axesHelper);
 const loader = new GLTFLoader();
 loader.load(
     leafUrl, 
-    function(gltf) {
-        scene.add(gltf.scene);
+    function(gltf) { 
+		initLeaves(gltf);
     },
     undefined,
     function(err) {
@@ -35,7 +35,7 @@ loader.load(
 );
 
 // light
-const light = new THREE.DirectionalLight( 0xffffff, 0.5 );
+const light = new THREE.DirectionalLight(0xffffff, 0.5);
 light.position.x = 5;
 light.position.y = 5;
 const lightHelper = new THREE.DirectionalLightHelper(light, 2);
@@ -46,3 +46,13 @@ function animate() {
     renderer.render(scene, camera);
 }
 renderer.setAnimationLoop(animate);
+
+function initLeaves(gltf) {
+	console.log(gltf.scene.children[0].geometry);
+
+	// scene content
+	const geometry = gltf.scene.children[0].geometry;
+	const material = new THREE.MeshNormalMaterial();
+	const leaf = new THREE.Mesh(geometry, material);
+	scene.add(leaf);
+}
