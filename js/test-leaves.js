@@ -12,9 +12,8 @@ document.body.appendChild(renderer.domElement);
 // scene and camera
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.x = 5;
-camera.position.y = 2;
-camera.position.z = 1;
+//camera.position.z = 5
+camera.position.x = 5
 
 // controls
 new OrbitControls(camera, renderer.domElement);
@@ -47,5 +46,8 @@ function initLeaves(gltf) {
 	const geometry = gltf.scene.children[0].geometry;
 	const material = new THREE.MeshNormalMaterial();
 	const leaf = new THREE.Mesh(geometry, material);
+
+	leaf.rotation.x = -0.1 * Math.PI;
+
 	scene.add(leaf);
 }
