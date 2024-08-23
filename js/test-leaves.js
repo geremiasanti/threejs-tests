@@ -9,10 +9,20 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// scene and camera
+// scene 
 const scene = new THREE.Scene();
-const camera = new THREE.OrthographicCamera(window.innerWidth / - 100, window.innerWidth / 100, window.innerHeight / 100, window.innerHeight / - 100, -1, 10);
-/* debug
+
+// camera
+let maxCoords = {
+	left: -window.innerWidth / 100,
+	right: window.innerWidth / 100,
+	top: window.innerHeight / 100,
+	bottom: -window.innerHeight / 100,
+}
+const camera = new THREE.OrthographicCamera(maxCoords.left,  maxCoords.right, maxCoords.top, maxCoords.bottom, 1, 10);
+
+/* 
+// debug
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.x = 5;
 camera.position.y = 5;
@@ -44,7 +54,7 @@ const loader = new GLTFLoader();
 loader.load(
     leafUrl, 
     function(gltf) { 
-		initLeaves(scene, gltf);
+		initLeaves(scene, maxCoords, gltf);
     },
     undefined,
     function(err) {
@@ -58,20 +68,23 @@ function animate() {
 }
 renderer.setAnimationLoop(animate);
 
-function initLeaves(scene, gltf) {
-	const leaves = createLeaves(scene, gltf);
+function initLeaves(scene, maxCoords, gltf) {
+	const leaves = createLeaves(scene, maxCoords, gltf);
 }
 
-function createLeaves(scene, gltf) {
+function createLeaves(scene, maxCoords, gltf) {
 	// scene content
 	const geometry = gltf.scene.children[0].geometry;
 	const material = new THREE.MeshLambertMaterial();
 	const leaf = new THREE.Mesh(geometry, material);
 	leaf.rotation.x = 2 * Math.PI;
 
+	console.log(maxCoords);
 	const leaves = new Array(5).fill(null).map((_, i) => {
 		const leafClone = leaf.clone();
-		leafClone.position.x += i * 2;
+		leafClone.position.x += i * 2 + maxCoords.left;
+		leafClone.position.y += maxCoords.top;
+		leafClone.position.z = -5;
 		scene.add(leafClone);
 		return leafClone;
 	});
