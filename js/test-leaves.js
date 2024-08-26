@@ -4,6 +4,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 import leafUrl from '/3d/leaves/leaf0.glb';
 
+init();
+
 function init() {
 	// renderer and canvas
 	const renderer = new THREE.WebGLRenderer();
@@ -70,17 +72,37 @@ function init() {
 }
 
 function initLeaves(scene, maxCoords, gltf) {
+	const amount = 100;
+	const dummy = new THREE.Object3D();
+	const leafSize = getGeometrySize(gltf.scene);
+
 	// scene content
 	const geometry = gltf.scene.children[0].geometry;
-	//temp const material = new THREE.MeshLambertMaterial();
-	const material = new THREE.MeshNormalMaterial();
-	const leaves = new THREE.InstancedMesh(geometry, material, 10);
+	const material = new THREE.MeshLambertMaterial();
+	const leaves = new THREE.InstancedMesh(geometry, material, amount);
 	leaves.position.z = -5;
 
+	for(let i = 0; i < amount; i++) {
+		dummy.position.set(
+			maxCoords.left + i * leafSize.x, 
+			maxCoords.top, 
+			0
+		);
+		dummy.updateMatrix();
+		leaves.setMatrixAt(i, dummy.matrix)
+	}
+
 	// will be updated every frame
-	leaves.instanceMatrix.setUsage( THREE.DynamicDrawUsage ); 
+	leaves.instanceMatrix.setUsage(THREE.DynamicDrawUsage); 
 
 	scene.add(leaves);
 }
 
-init();
+function getGeometrySize(geometry) {
+	const box = new THREE.Box3().setFromObject(geometry);
+	return {
+		x: box.max.x - box.min.x,
+		y: box.max.y - box.min.y,
+		z: box.max.z - box.min.z
+	};
+}
