@@ -91,7 +91,6 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 	for(let y = 0; y < leafPerColumn; y++) {
 		for(let x = 0; x < leafPerRow; x++) {
 			let i = x + y * leafPerRow;
-			console.log(x, y, i);
 
 			// todo
 			dummy.position.set(
