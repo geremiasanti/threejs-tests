@@ -75,19 +75,15 @@ function initLeaves(scene, maxCoords, gltf) {
 function createLeaves(scene, maxCoords, gltf) {
 	// scene content
 	const geometry = gltf.scene.children[0].geometry;
-	const material = new THREE.MeshLambertMaterial();
-	const leaf = new THREE.Mesh(geometry, material);
-	leaf.rotation.x = 2 * Math.PI;
+	//temp const material = new THREE.MeshLambertMaterial();
+	const material = new THREE.MeshNormalMaterial();
+	const leaves = new THREE.InstancedMesh(geometry, material, 10);
+	leaves.position.z = -5;
 
-	console.log(maxCoords);
-	const leaves = new Array(5).fill(null).map((_, i) => {
-		const leafClone = leaf.clone();
-		leafClone.position.x += i * 2 + maxCoords.left;
-		leafClone.position.y += maxCoords.top;
-		leafClone.position.z = -5;
-		scene.add(leafClone);
-		return leafClone;
-	});
+	// will be updated every frame
+	leaves.instanceMatrix.setUsage( THREE.DynamicDrawUsage ); 
+
+	scene.add(leaves);
 
 	return leaves
 }
