@@ -15,14 +15,17 @@ function init() {
 	// scene 
 	const scene = new THREE.Scene();
 
-	// camera
-	let maxCoords = {
+	let cameraBoundingRect = {
 		left: -window.innerWidth / 100,
 		right: window.innerWidth / 100,
 		top: window.innerHeight / 100,
 		bottom: -window.innerHeight / 100,
 	}
-	const camera = new THREE.OrthographicCamera(maxCoords.left,  maxCoords.right, maxCoords.top, maxCoords.bottom, 1, 10);
+	cameraBoundingRect.width = cameraBoundingRect.right - cameraBoundingRect.left;
+	cameraBoundingRect.height = cameraBoundingRect.top - cameraBoundingRect.bottom;
+
+	// camera
+	const camera = new THREE.OrthographicCamera(cameraBoundingRect.left,  cameraBoundingRect.right, cameraBoundingRect.top, cameraBoundingRect.bottom, 1, 10);
 
 	/* 
 	// debug
@@ -57,7 +60,7 @@ function init() {
 	loader.load(
 		leafUrl, 
 		function(gltf) { 
-			initLeaves(scene, maxCoords, gltf);
+			initLeaves(scene, cameraBoundingRect, gltf);
 		},
 		undefined,
 		function(err) {
@@ -71,10 +74,12 @@ function init() {
 	renderer.setAnimationLoop(animate);
 }
 
-function initLeaves(scene, maxCoords, gltf) {
-	const amount = 100;
-	const dummy = new THREE.Object3D();
+function initLeaves(scene, cameraBoundingRect, gltf) {
 	const leafSize = getGeometrySize(gltf.scene);
+
+	const leafPerRow = Math.ceil(cameraBoundingRect.width / leafSize.x) + 1;
+	const leafPerColumn = Math.ceil(cameraBoundingRect.height / leafSize.y) + 1;
+	const amount = leafPerRow * leafPerColumn;
 
 	// scene content
 	const geometry = gltf.scene.children[0].geometry;
@@ -82,14 +87,22 @@ function initLeaves(scene, maxCoords, gltf) {
 	const leaves = new THREE.InstancedMesh(geometry, material, amount);
 	leaves.position.z = -5;
 
-	for(let i = 0; i < amount; i++) {
-		dummy.position.set(
-			maxCoords.left + i * leafSize.x, 
-			maxCoords.top, 
-			0
-		);
-		dummy.updateMatrix();
-		leaves.setMatrixAt(i, dummy.matrix)
+	const dummy = new THREE.Object3D();
+	for(let y = 0; y < leafPerColumn; y++) {
+		for(let x = 0; x < leafPerRow; x++) {
+			let i = x + y * leafPerRow;
+			console.log(x, y, i);
+
+			// todo
+			dummy.position.set(
+				cameraBoundingRect.left + x * leafSize.x, 
+				cameraBoundingRect.top - y * leafSize.y, 
+				0
+			);
+			dummy.updateMatrix();
+			leaves.setMatrixAt(i, dummy.matrix)
+
+		}
 	}
 
 	// will be updated every frame
