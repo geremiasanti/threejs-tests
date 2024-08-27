@@ -92,10 +92,17 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 		for(let x = 0; x < leafPerRow; x++) {
 			let i = x + y * leafPerRow;
 
+			let xPos = cameraBoundingRect.left + x * leafSize.x;
+			let yPos = cameraBoundingRect.top - y * leafSize.y;
+
+			// offset every other row
+			if(y % 2) 
+				xPos -= leafSize.x / 2;
+
 			// todo
 			dummy.position.set(
-				cameraBoundingRect.left + x * leafSize.x, 
-				cameraBoundingRect.top - y * leafSize.y, 
+				xPos,
+				yPos,
 				0
 			);
 			dummy.updateMatrix();
