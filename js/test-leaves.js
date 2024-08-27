@@ -77,8 +77,11 @@ function init() {
 function initLeaves(scene, cameraBoundingRect, gltf) {
 	const leafSize = getGeometrySize(gltf.scene);
 
-	const leafPerRow = Math.ceil(cameraBoundingRect.width / leafSize.x) + 1;
-	const leafPerColumn = Math.ceil(cameraBoundingRect.height / leafSize.y) + 1;
+	const horizontalOffset = leafSize.x;
+	const verticalOffset = leafSize.y * .55;
+
+	const leafPerRow = Math.ceil(cameraBoundingRect.width / horizontalOffset) + 1;
+	const leafPerColumn = Math.ceil(cameraBoundingRect.height / verticalOffset) + 1;
 	const amount = leafPerRow * leafPerColumn;
 
 	// scene content
@@ -92,12 +95,12 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 		for(let x = 0; x < leafPerRow; x++) {
 			let i = x + y * leafPerRow;
 
-			let xPos = cameraBoundingRect.left + x * leafSize.x;
-			let yPos = cameraBoundingRect.top - y * leafSize.y;
+			let xPos = cameraBoundingRect.left + x * horizontalOffset;
+			let yPos = cameraBoundingRect.top - y * verticalOffset;
 
 			// offset every other row
 			if(y % 2) {
-				xPos -= leafSize.x / 2;
+				xPos -= horizontalOffset / 2;
 			}
 
 			// todo
