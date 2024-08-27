@@ -78,7 +78,7 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 	const leafSize = getGeometrySize(gltf.scene);
 
 	const horizontalOffset = leafSize.x;
-	const verticalOffset = leafSize.y * .55;
+	const verticalOffset = leafSize.y * .46;
 
 	const leafPerRow = Math.ceil(cameraBoundingRect.width / horizontalOffset) + 1;
 	const leafPerColumn = Math.ceil(cameraBoundingRect.height / verticalOffset) + 1;
@@ -89,8 +89,11 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 	const material = new THREE.MeshLambertMaterial();
 	const leaves = new THREE.InstancedMesh(geometry, material, amount);
 	leaves.position.z = -5;
+	leaves.rotation.x = .0;
+	leaves.rotation.y = .0;
 
 	const dummy = new THREE.Object3D();
+	dummy.rotation.x = -.3;
 	for(let y = 0; y < leafPerColumn; y++) {
 		for(let x = 0; x < leafPerRow; x++) {
 			let i = x + y * leafPerRow;
