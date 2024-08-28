@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+import { Noise } from 'noisejs';
+
 import leafUrl from '/3d/leaves/leaf0.glb';
 
 /*
@@ -10,9 +12,11 @@ import { GUI } from 'lil-gui'
 const gui = new GUI();
 */
 
-
 init();
 function init() {
+	const noise = new Noise(Math.random());
+	let t = 0;
+
 	// renderer and canvas
 	const renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth, window.innerHeight);
@@ -66,10 +70,11 @@ function init() {
 
 	// adding model to scene
 	const loader = new GLTFLoader();
+	let leavesObj;
 	loader.load(
 		leafUrl, 
 		function(gltf) { 
-			initLeaves(scene, cameraBoundingRect, gltf);
+			leavesObj = initLeaves(scene, cameraBoundingRect, gltf);
 		},
 		undefined,
 		function(err) {
@@ -78,6 +83,11 @@ function init() {
 	);
 
 	function animate() { 
+		if(leavesObj) {
+			animateLeaves(t, leavesObj);
+		}
+
+		t++;
 		renderer.render(scene, camera);
 	}
 	renderer.setAnimationLoop(animate);
@@ -100,8 +110,9 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 	leaves.position.z = -5;
 	leaves.rotation.y = .4
 
+	const leafStartingRotationX = -.35;
 	const dummy = new THREE.Object3D();
-	dummy.rotation.x = -.35;
+	dummy.rotation.x = leafStartingRotationX;
 	for(let y = 0; y < leafPerColumn; y++) {
 		for(let x = 0; x < leafPerRow; x++) {
 			let i = x + y * leafPerRow;
@@ -125,6 +136,16 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 	leaves.instanceMatrix.setUsage(THREE.DynamicDrawUsage); 
 
 	scene.add(leaves);
+
+	return {
+		instancedMesh: leaves,
+		leafPerRow: leafPerRow,	
+		leafPerColumn: leafPerColumn,	
+		leafStartingRotationX: leafStartingRotationX,
+		horizontalOffset: horizontalOffset,
+		verticalOffset: verticalOffset,
+		boundingRect: cameraBoundingRect
+	};
 }
 
 function getGeometrySize(geometry) {
@@ -134,4 +155,40 @@ function getGeometrySize(geometry) {
 		y: box.max.y - box.min.y,
 		z: box.max.z - box.min.z
 	};
+}
+
+function animateLeaves(t, leavesObj) {
+	const {
+		instancedMesh, 
+		leafPerRow, 
+		leafPerColumn, 
+		leafStartingRotationX, 
+		horizontalOffset, 
+		verticalOffset, 
+		boundingRect
+	} = leavesObj;
+
+	const dummy = new THREE.Object3D();
+	dummy.rotation.x = leafStartingRotationX + t / 100;
+	for(let y = 0; y < leafPerColumn; y++) {
+		for(let x = 0; x < leafPerRow; x++) {
+			let i = x + y * leafPerRow;
+
+			let xPos = boundingRect.left + x * horizontalOffset;
+			let yPos = boundingRect.top - y * verticalOffset;
+
+			// offset every other row
+			if(y % 2) {
+				xPos -= horizontalOffset / 2;
+			}
+
+			dummy.position.set(xPos, yPos, 0);
+			dummy.updateMatrix();
+
+			instancedMesh.setMatrixAt(i, dummy.matrix)
+		}
+	}
+
+	instancedMesh.instanceMatrix.needsUpdate = true;
+	instancedMesh.computeBoundingSphere();
 }
