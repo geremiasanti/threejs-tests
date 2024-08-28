@@ -2,12 +2,16 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-import { GUI } from 'dat.gui'
-
 import leafUrl from '/3d/leaves/leaf0.glb';
 
-init();
+/*
+// debug
+import { GUI } from 'lil-gui'
+const gui = new GUI();
+*/
 
+
+init();
 function init() {
 	// renderer and canvas
 	const renderer = new THREE.WebGLRenderer();
@@ -32,8 +36,6 @@ function init() {
 	/* 
 	// debug
 	const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-	camera.position.x = 5;
-	camera.position.y = 5;
 	camera.position.z = 5;
 	*/
 
@@ -45,12 +47,9 @@ function init() {
 	scene.add(axesHelper);
 
 	// lights + helpers
-	const ambientLight = new THREE.AmbientLight(0x404040); // soft white light
-	scene.add(ambientLight);
-
 	const directionalLight = new THREE.DirectionalLight();
-	directionalLight.position.x = 5;
-	directionalLight.position.y = 5;
+	directionalLight.position.x = -5;
+	directionalLight.position.y = 10;
 	directionalLight.position.z = 5;
 	scene.add(directionalLight);
 	const helper = new THREE.DirectionalLightHelper(directionalLight, 5);
@@ -91,8 +90,7 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 	const material = new THREE.MeshLambertMaterial();
 	const leaves = new THREE.InstancedMesh(geometry, material, amount);
 	leaves.position.z = -5;
-	leaves.rotation.x = .0;
-	leaves.rotation.y = .0;
+	leaves.rotation.y = .4
 
 	const dummy = new THREE.Object3D();
 	dummy.rotation.x = -.3;
@@ -108,15 +106,10 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 				xPos -= horizontalOffset / 2;
 			}
 
-			// todo
-			dummy.position.set(
-				xPos,
-				yPos,
-				0
-			);
+			dummy.position.set(xPos, yPos, 0);
 			dummy.updateMatrix();
-			leaves.setMatrixAt(i, dummy.matrix)
 
+			leaves.setMatrixAt(i, dummy.matrix)
 		}
 	}
 
