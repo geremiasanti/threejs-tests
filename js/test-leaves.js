@@ -31,7 +31,7 @@ function init() {
 	cameraBoundingRect.height = cameraBoundingRect.top - cameraBoundingRect.bottom;
 
 	// camera
-	const camera = new THREE.OrthographicCamera(cameraBoundingRect.left,  cameraBoundingRect.right, cameraBoundingRect.top, cameraBoundingRect.bottom, 1, 10);
+	const camera = new THREE.OrthographicCamera(cameraBoundingRect.left, cameraBoundingRect.right, cameraBoundingRect.top, cameraBoundingRect.bottom, 1, 10);
 
 	/* 
 	// debug
@@ -46,18 +46,23 @@ function init() {
 	const axesHelper = new THREE.AxesHelper(5);
 	scene.add(axesHelper);
 
-	// lights
-	const directionalLight = new THREE.DirectionalLight();
+	// light
+	const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
 	directionalLight.position.x = -1;
 	directionalLight.position.y = 2;
 	directionalLight.position.z = 1;
+	directionalLight.castShadow = true;
+	// shadow properties for the light
+	directionalLight.shadow.mapSize.width = 512; // default
+	directionalLight.shadow.mapSize.height = 512; // default
+	directionalLight.shadow.camera.near = 1; // default
+	directionalLight.shadow.camera.far = 10; // default
 	scene.add(directionalLight);
 	/*
 	// debug
 	const helper = new THREE.DirectionalLightHelper(directionalLight, 5);
 	scene.add(helper);
 	*/
-
 
 	// adding model to scene
 	const loader = new GLTFLoader();
@@ -96,7 +101,7 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 	leaves.rotation.y = .4
 
 	const dummy = new THREE.Object3D();
-	dummy.rotation.x = -.3;
+	dummy.rotation.x = -.35;
 	for(let y = 0; y < leafPerColumn; y++) {
 		for(let x = 0; x < leafPerRow; x++) {
 			let i = x + y * leafPerRow;
