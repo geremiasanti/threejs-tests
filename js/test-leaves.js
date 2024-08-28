@@ -46,14 +46,17 @@ function init() {
 	const axesHelper = new THREE.AxesHelper(5);
 	scene.add(axesHelper);
 
-	// lights + helpers
+	// lights
 	const directionalLight = new THREE.DirectionalLight();
-	directionalLight.position.x = -5;
-	directionalLight.position.y = 10;
-	directionalLight.position.z = 5;
+	directionalLight.position.x = -1;
+	directionalLight.position.y = 2;
+	directionalLight.position.z = 1;
 	scene.add(directionalLight);
+	/*
+	// debug
 	const helper = new THREE.DirectionalLightHelper(directionalLight, 5);
 	scene.add(helper);
+	*/
 
 
 	// adding model to scene
