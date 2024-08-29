@@ -84,7 +84,7 @@ function init() {
 
 	function animate() { 
 		if(leavesObj) {
-			animateLeaves(t, leavesObj);
+			animateLeaves(t, leavesObj, noise);
 		}
 
 		t++;
@@ -157,7 +157,7 @@ function getGeometrySize(geometry) {
 	};
 }
 
-function animateLeaves(t, leavesObj) {
+function animateLeaves(t, leavesObj, noise) {
 	const {
 		instancedMesh, 
 		leafPerRow, 
@@ -169,22 +169,31 @@ function animateLeaves(t, leavesObj) {
 	} = leavesObj;
 
 	const dummy = new THREE.Object3D();
-	dummy.rotation.x = leafStartingRotationX + t / 100;
 	for(let y = 0; y < leafPerColumn; y++) {
 		for(let x = 0; x < leafPerRow; x++) {
 			let i = x + y * leafPerRow;
 
+			// position in the matrix
 			let xPos = boundingRect.left + x * horizontalOffset;
 			let yPos = boundingRect.top - y * verticalOffset;
-
 			// offset every other row
 			if(y % 2) {
 				xPos -= horizontalOffset / 2;
 			}
-
 			dummy.position.set(xPos, yPos, 0);
-			dummy.updateMatrix();
 
+			// rotation from noise
+			let xRotationNoise  = noise.simplex3(
+				x / leafPerRow, 
+				y / leafPerColumn, 
+				t / 100
+			) 
+			dummy.rotation.x = Math.min(
+				leafStartingRotationX + xRotationNoise,
+				leafStartingRotationX
+			);
+
+			dummy.updateMatrix();
 			instancedMesh.setMatrixAt(i, dummy.matrix)
 		}
 	}
