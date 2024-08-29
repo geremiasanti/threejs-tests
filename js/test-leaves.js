@@ -192,6 +192,12 @@ function animateLeaves(t, leavesObj, noise) {
 				leafStartingRotationX + xRotationNoise,
 				leafStartingRotationX
 			);
+			let zRotationNoise  = noise.perlin3(
+				y / leafPerColumn, 
+				x / leafPerRow, 
+				t / 100
+			) 
+			dummy.rotation.z = zRotationNoise / 5;
 
 			dummy.updateMatrix();
 			instancedMesh.setMatrixAt(i, dummy.matrix)
