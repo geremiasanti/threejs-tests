@@ -35,8 +35,7 @@ function init() {
 	cameraBoundingRect.height = cameraBoundingRect.top - cameraBoundingRect.bottom;
 
 	// camera
-	// todo change near and far for fullscreen
-	const camera = new THREE.OrthographicCamera(cameraBoundingRect.left, cameraBoundingRect.right, cameraBoundingRect.top, cameraBoundingRect.bottom, 1, 10);
+	const camera = new THREE.OrthographicCamera(cameraBoundingRect.left, cameraBoundingRect.right, cameraBoundingRect.top, cameraBoundingRect.bottom, 1, 20);
 
 	/* 
 	// debug
@@ -100,15 +99,16 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 	const horizontalOffset = leafSize.x;
 	const verticalOffset = leafSize.y * .46;
 
-	const leafPerRow = Math.ceil(cameraBoundingRect.width / horizontalOffset) + 1;
-	const leafPerColumn = Math.ceil(cameraBoundingRect.height / verticalOffset) + 1;
+	const leafPerRow = Math.ceil(cameraBoundingRect.width / horizontalOffset) + 3;
+	const leafPerColumn = Math.ceil(cameraBoundingRect.height / verticalOffset) + 3;
 	const amount = leafPerRow * leafPerColumn;
 
 	// scene content
 	const geometry = gltf.scene.children[0].geometry;
 	const material = new THREE.MeshLambertMaterial();
 	const leaves = new THREE.InstancedMesh(geometry, material, amount);
-	leaves.position.z = -5;
+	leaves.position.z = -10;
+	leaves.position.x = -2;
 	leaves.rotation.y = .4
 
 	const leafStartingRotationX = -.35;
