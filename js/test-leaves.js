@@ -35,7 +35,7 @@ function init() {
 	cameraBoundingRect.height = cameraBoundingRect.top - cameraBoundingRect.bottom;
 
 	// camera
-	const camera = new THREE.OrthographicCamera(cameraBoundingRect.left, cameraBoundingRect.right, cameraBoundingRect.top, cameraBoundingRect.bottom, 1, 20);
+	const camera = new THREE.OrthographicCamera(cameraBoundingRect.left, cameraBoundingRect.right, cameraBoundingRect.top, cameraBoundingRect.bottom, 1, 40);
 
 	/* 
 	// debug
@@ -107,7 +107,7 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 	const geometry = gltf.scene.children[0].geometry;
 	const material = new THREE.MeshLambertMaterial();
 	const leaves = new THREE.InstancedMesh(geometry, material, amount);
-	leaves.position.z = -10;
+	leaves.position.z = -20;
 	leaves.position.x = -2;
 	leaves.rotation.y = .4
 
