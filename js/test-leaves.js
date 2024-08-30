@@ -103,6 +103,15 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 	const leafPerColumn = Math.ceil(cameraBoundingRect.height / verticalOffset) + 3;
 	const amount = leafPerRow * leafPerColumn;
 
+	const leavesColors = [
+		new THREE.Color(0x1d2e28),
+		new THREE.Color(0x06402b),
+		new THREE.Color(0x18392b),
+		new THREE.Color(0x14452f),
+		new THREE.Color(0x0f5132),
+		new THREE.Color(0x0a5c36)
+	]
+
 	// scene content
 	const geometry = gltf.scene.children[0].geometry;
 	const material = new THREE.MeshLambertMaterial();
@@ -130,6 +139,13 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 			dummy.updateMatrix();
 
 			leaves.setMatrixAt(i, dummy.matrix)
+
+			leaves.setColorAt(
+				i, 
+				leavesColors[
+					Math.floor(Math.random() * leavesColors.length)
+				]
+			)
 		}
 	}
 
