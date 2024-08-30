@@ -35,6 +35,7 @@ function init() {
 	cameraBoundingRect.height = cameraBoundingRect.top - cameraBoundingRect.bottom;
 
 	// camera
+	// todo change near and far for fullscreen
 	const camera = new THREE.OrthographicCamera(cameraBoundingRect.left, cameraBoundingRect.right, cameraBoundingRect.top, cameraBoundingRect.bottom, 1, 10);
 
 	/* 
@@ -192,12 +193,8 @@ function animateLeaves(t, leavesObj, noise) {
 				leafStartingRotationX + xRotationNoise,
 				leafStartingRotationX
 			);
-			let zRotationNoise  = noise.perlin3(
-				y / leafPerColumn, 
-				x / leafPerRow, 
-				t / 100
-			) 
-			dummy.rotation.z = zRotationNoise / 5;
+			let zRotationNoise  = noise.simplex2(i, t / 100)
+			dummy.rotation.z = zRotationNoise / 10;
 
 			dummy.updateMatrix();
 			instancedMesh.setMatrixAt(i, dummy.matrix)
