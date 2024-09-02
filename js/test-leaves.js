@@ -52,21 +52,16 @@ function init() {
 
 	// light
 	const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
-	directionalLight.position.x = -1;
-	directionalLight.position.y = 2;
-	directionalLight.position.z = 1;
+	directionalLight.position.x = -5;
+	directionalLight.position.y = 10;
+	directionalLight.position.z = 5;
 	directionalLight.castShadow = true;
 	// shadow properties for the light
 	directionalLight.shadow.mapSize.width = 512; // default
 	directionalLight.shadow.mapSize.height = 512; // default
 	directionalLight.shadow.camera.near = 1; // default
-	directionalLight.shadow.camera.far = 10; // default
+	directionalLight.shadow.camera.far = 40; // default
 	scene.add(directionalLight);
-	/*
-	// debug
-	const helper = new THREE.DirectionalLightHelper(directionalLight, 5);
-	scene.add(helper);
-	*/
 
 	// adding model to scene
 	const loader = new GLTFLoader();
@@ -74,7 +69,7 @@ function init() {
 	loader.load(
 		leafUrl, 
 		function(gltf) { 
-			leavesObj = initLeaves(scene, cameraBoundingRect, gltf);
+			leavesObj = initLeaves(scene, cameraBoundingRect, gltf, directionalLight);
 		},
 		undefined,
 		function(err) {
@@ -93,7 +88,7 @@ function init() {
 	renderer.setAnimationLoop(animate);
 }
 
-function initLeaves(scene, cameraBoundingRect, gltf) {
+function initLeaves(scene, cameraBoundingRect, gltf, directionalLight) {
 	const leafSize = getGeometrySize(gltf.scene);
 
 	const horizontalOffset = leafSize.x;
@@ -116,7 +111,8 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 	const geometry = gltf.scene.children[0].geometry;
 	const material = new THREE.MeshLambertMaterial();
 	const leaves = new THREE.InstancedMesh(geometry, material, amount);
-	leaves.position.z = -20;
+	leaves.receiveShadow = true;
+	leaves.position.z = -10;
 	leaves.position.x = -2;
 	leaves.rotation.y = .4
 
@@ -153,6 +149,13 @@ function initLeaves(scene, cameraBoundingRect, gltf) {
 	leaves.instanceMatrix.setUsage(THREE.DynamicDrawUsage); 
 
 	scene.add(leaves);
+
+	directionalLight.target = leaves;
+	///*
+	// debug
+	const helper = new THREE.DirectionalLightHelper(directionalLight, 5);
+	scene.add(helper);
+	//*/
 
 	return {
 		instancedMesh: leaves,
